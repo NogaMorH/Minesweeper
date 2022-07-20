@@ -1,0 +1,39 @@
+body {
+    text-align: center;
+}
+
+h1 {
+    font-size: 40px;
+}
+
+.stopwatch-container {
+    font-size: 20px;
+    margin: 10px;
+}
+
+.restart-btn {
+    font-size: 30px;
+    margin-bottom: 20px;
+}
+
+table {
+    margin: auto;
+}
+
+.cell {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5em;
+}
+
+.clickable:hover {
+    background-color: rgb(209, 209, 209);
+}
+
+.shown {
+    background-color: bisque;
+}
+
+.clicked-mine {
+    background-color: red;
+}
