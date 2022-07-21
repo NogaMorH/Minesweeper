@@ -11,7 +11,6 @@ body {
     padding-bottom: 10px;
     padding-top: 1px;
     border-radius: 5px;
-    /* border: 2px solid rgb(221, 200, 106); */
 }
 
 h1 {
@@ -30,6 +29,9 @@ h1 {
     font-size: 30px;
     margin-bottom: 20px;
     padding: 5px 7px;
+    background-color: rgba(196, 43, 43, 0.935);
+    border-radius: 3px;
+    cursor: pointer;
 }
 
 .level-btns-container {
@@ -39,6 +41,7 @@ h1 {
 .level-btn {
     margin: 5px;
     padding: 5px;
+    cursor: pointer;
 }
 
 table {

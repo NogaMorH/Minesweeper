@@ -54,19 +54,25 @@ function expandShown(cellI, cellJ) {
     for (var i = cellI - 1; i <= cellI + 1; i++) {
         if (i < 0 || i >= gBoard.length) continue
         for (var j = cellJ - 1; j <= cellJ + 1; j++) {
+            const currCell = gBoard[i][j]
             if (j < 0 || j >= gBoard.length) continue
             if (cellI === i && cellJ === j) continue
-            if (gBoard[i][j].isMine) continue
-            if (gBoard[i][j].isMarked) continue
-            if (gBoard[i][j].isShown) continue
+            if (currCell.isMine) continue
+            if (currCell.isMarked) continue
+            if (currCell.isShown) continue
             // MODEL
-            gBoard[i][j].isShown = true
+            currCell.isShown = true
             gGame.shownCount++
             // DOM
             var elCurrCell = document.querySelector(`.cell-${i}-${j}`)
-            elCurrCell.innerText = gBoard[i][j].minesAroundCount
             elCurrCell.classList.add('shown')
             elCurrCell.classList.remove('clickable')
+            if (currCell.minesAroundCount === 0) {
+                elCurrCell.innerText = ' '
+                expandShown(i, j)
+            } else {
+                elCurrCell.innerText = currCell.minesAroundCount
+            }
         }
     }
 }

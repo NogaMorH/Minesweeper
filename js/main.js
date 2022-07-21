@@ -7,7 +7,7 @@ var gGame = {
     isOn: false,
     shownCount: 0,
     markedCount: 0,
-    secsPassed: '00:00',
+    secsPassed: '0:00',
     minesLocations: [],
     isWin: false,
     livesCount: 1
@@ -34,7 +34,6 @@ function buildBoard() {
                 isMarked: false,
                 isExploded: false
             }
-            // if (i === 2 && j === 2 || i === 0 && j === 3) currCell.isMine = true
             gBoard[i][j] = currCell
         }
     }
@@ -47,14 +46,7 @@ function renderBoard() {
     for (var i = 0; i < gBoard.length; i++) {
         strHtml += '<tr>'
         for (var j = 0; j < gBoard.length; j++) {
-            // const currCell = gBoard[i][j]
             strHtml += `<td class="cell cell-${i}-${j} clickable" onclick="cellClicked(this, ${i}, ${j})" oncontextmenu="cellMarked(event, this, ${i}, ${j})"> </td>`
-            // if (currCell.isMine) {
-            //     strHtml += `${MINE}`
-            // } else {
-            //     setMinesNegsCount(i, j, gBoard)
-            //     strHtml += `${currCell.minesAroundCount}`
-            // }
         }
         strHtml += '</tr>'
     }
@@ -144,7 +136,6 @@ function restartGame() {
 
     gStartTime = null
     gTimeIntervalId = null
-    // gEmptyCells = []
 
     renderStopwatch()
     renderLives()

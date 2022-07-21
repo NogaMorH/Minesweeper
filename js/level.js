@@ -20,7 +20,6 @@ function setMediumLevel() {
     gLevel.mines = 12
     gLevel.lives = 2
     gGame.livesCount = 2
-    console.log('gGame.livesCount:', gGame.livesCount)
     renderLives()
     restartGame()
 }
