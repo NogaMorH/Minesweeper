@@ -12,7 +12,7 @@
 <body onload="initGame()">
     <div class="game-container">
         <h1>Minesweeper</h1>
-        <div class="stopwatch-container">TIME: <span class="stopwatch">0.00</span></div>
+        <div class="stopwatch-container">TIME: <span class="stopwatch">0.0</span></div>
         <div class="restart-btn-container">
             <button class="restart-btn">😺</button>
         </div>
@@ -24,13 +24,18 @@
         <table>
             <tbody></tbody>
         </table>
-        <div class="lives-container">LIVES LEFT: <span class="lives">❤</span></div>
+        <div class="lives-container">LIVES LEFT: <span class="lives">❤</span>
+            <span class="hints-container"> HINTS: <span class="hints">
+                    <button class="hint-btn" onclick="nextClickHint(this)">💡</button>
+                </span>
+        </div>
     </div>
     <script src="js/util.js"></script>
     <script src="js/level.js"></script>
     <script src="js/main.js"></script>
     <script src="js/user.js"></script>
     <script src="js/time.js"></script>
+    <script src="js/hint.js"></script>
 </body>
 
 </html>

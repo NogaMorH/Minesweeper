@@ -7,7 +7,7 @@ var gGame = {
     isOn: false,
     shownCount: 0,
     markedCount: 0,
-    secsPassed: '0:00',
+    secsPassed: '0:0',
     minesLocations: [],
     isWin: false,
     livesCount: 1
@@ -18,7 +18,6 @@ const FLAG = '🚩'
 
 function initGame() {
     buildBoard()
-    console.log('gBoard:', gBoard)
     renderBoard()
 }
 
@@ -73,7 +72,6 @@ function setMines(clickedCellI, clickedCellJ) {
         gGame.minesLocations.push(mineLocation)
         gEmptyCells.splice(randomIdx, 1)
     }
-    console.log('gGame.minesLocations:', gGame.minesLocations)
 }
 
 function checkWin() {
@@ -82,7 +80,8 @@ function checkWin() {
         const mineCell = gBoard[mineLocation.i][mineLocation.j]
         if (mineCell.isMarked || mineCell.isShown) {
             const notMineCellsCount = gLevel.size * gLevel.size - gLevel.mines
-            if (gGame.shownCount >= notMineCellsCount) {
+            const lifeDiff = gLevel.lives - gGame.livesCount
+            if (gGame.shownCount >= notMineCellsCount + lifeDiff) {
                 clearInterval(gTimeIntervalId)
                 gGame.isWin = true
                 gGame.isOn = false
@@ -92,10 +91,11 @@ function checkWin() {
     }
 }
 
-function gameOver(elCell) {
+function gameOver(elCell, i, j) {
     --gGame.livesCount
     renderLives()
     if (gGame.livesCount !== 0) {
+        gBoard[i][j].isExploded = true
         elCell.innerText = '💣'
         return
     }
@@ -136,7 +136,7 @@ function restartGame() {
 
     gStartTime = null
     gTimeIntervalId = null
-
+    renderHintsCount()
     renderStopwatch()
     renderLives()
     disableRestartBtn()
@@ -181,4 +181,3 @@ function renderLives() {
     const elLives = document.querySelector('.lives')
     elLives.innerText = strHtmlLives
 }
-

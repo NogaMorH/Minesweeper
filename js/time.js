@@ -10,7 +10,7 @@ function startTime() {
 
 function setTime() {
     const timeDifference = (Date.now() - gStartTime) / 1000
-    gGame.secsPassed = timeDifference.toFixed(2, '0')
+    gGame.secsPassed = timeDifference.toFixed(1, '0')
     renderStopwatch()
 }
 
