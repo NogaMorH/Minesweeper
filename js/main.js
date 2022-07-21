@@ -1,19 +1,16 @@
 'use strict'
 
 var gBoard
-
-const gLevel = {
-    size: 4,
-    mines: 2
-}
+var gEmptyCells = []
 
 var gGame = {
     isOn: false,
     shownCount: 0,
     markedCount: 0,
-    secsPassed: 0,
-    minesLocations: [{ i: 2, j: 2 }, { i: 0, j: 3 }],
-    isWin: false
+    secsPassed: '00:00',
+    minesLocations: [],
+    isWin: false,
+    livesCount: 1
 }
 
 const MINE = '💣'
@@ -23,7 +20,6 @@ function initGame() {
     buildBoard()
     console.log('gBoard:', gBoard)
     renderBoard()
-    gGame.isOn = true
 }
 
 function buildBoard() {
@@ -35,9 +31,10 @@ function buildBoard() {
                 minesAroundCount: 0,
                 isShown: false,
                 isMine: false,
-                isMarked: false
+                isMarked: false,
+                isExploded: false
             }
-            if (i === 2 && j === 2 || i === 0 && j === 3) currCell.isMine = true
+            // if (i === 2 && j === 2 || i === 0 && j === 3) currCell.isMine = true
             gBoard[i][j] = currCell
         }
     }
@@ -52,7 +49,6 @@ function renderBoard() {
         for (var j = 0; j < gBoard.length; j++) {
             // const currCell = gBoard[i][j]
             strHtml += `<td class="cell cell-${i}-${j} clickable" onclick="cellClicked(this, ${i}, ${j})" oncontextmenu="cellMarked(event, this, ${i}, ${j})"> </td>`
-            setMinesNegsCount(i, j, gBoard)
             // if (currCell.isMine) {
             //     strHtml += `${MINE}`
             // } else {
@@ -65,28 +61,60 @@ function renderBoard() {
     elTBody.innerHTML = strHtml
 }
 
+function startGame(i, j) {
+    gGame.isOn = true
+    setMines(i, j)
+    for (var i = 0; i < gBoard.length; i++) {
+        for (var j = 0; j < gBoard.length; j++) {
+            setMinesNegsCount(i, j, gBoard)
+        }
+    }
+    startTime()
+}
+
+function setMines(clickedCellI, clickedCellJ) {
+    gEmptyCells = getEmptyCells(gBoard, clickedCellI, clickedCellJ)
+    for (var i = 0; i < gLevel.mines; i++) {
+        var randomIdx = getRandomInt(0, gEmptyCells.length)
+        const mineLocation = gEmptyCells[randomIdx]
+        gBoard[mineLocation.i][mineLocation.j].isMine = true
+        gGame.minesLocations.push(mineLocation)
+        gEmptyCells.splice(randomIdx, 1)
+    }
+    console.log('gGame.minesLocations:', gGame.minesLocations)
+}
+
 function checkWin() {
     for (var i = 0; i < gGame.minesLocations.length; i++) {
         const mineLocation = gGame.minesLocations[i]
-        if (!gBoard[mineLocation.i][mineLocation.j].isMarked) return false
-        const notMineCellsCount = gLevel.size * gLevel.size - gLevel.mines
-        if (gGame.shownCount !== notMineCellsCount) return false
+        const mineCell = gBoard[mineLocation.i][mineLocation.j]
+        if (mineCell.isMarked || mineCell.isShown) {
+            const notMineCellsCount = gLevel.size * gLevel.size - gLevel.mines
+            if (gGame.shownCount >= notMineCellsCount) {
+                clearInterval(gTimeIntervalId)
+                gGame.isWin = true
+                gGame.isOn = false
+                enableRestartBtn()
+            }
+        }
     }
-    console.log('win!')
-    gGame.isWin = true
-    gGame.isOn = false
-    enableRestartButton()
 }
 
 function gameOver(elCell) {
+    --gGame.livesCount
+    renderLives()
+    if (gGame.livesCount !== 0) {
+        elCell.innerText = '💣'
+        return
+    }
     // MODEL
     gGame.isOn = false
-    showAllMines()
-    console.log('GAME OVER')
+    clearInterval(gTimeIntervalId)
     // DOM
+    showAllMines()
     disableHover()
     elCell.classList.add('clicked-mine')
-    enableRestartButton()
+    enableRestartBtn()
 }
 
 function showAllMines() {
@@ -104,17 +132,29 @@ function showAllMines() {
 }
 
 function restartGame() {
-    console.log('hi restart')
-    gGame = {
-        isOn: false,
-        shownCount: 0,
-        markedCount: 0,
-        secsPassed: 0
-    }
+    clearInterval(gTimeIntervalId)
+
+    gGame.isOn = false
+    gGame.shownCount = 0
+    gGame.markedCount = 0
+    gGame.secsPassed = '00:00'
+    gGame.minesLocations = []
+    gGame.isWin = false
+    gGame.livesCount = gLevel.lives
+
+    gStartTime = null
+    gTimeIntervalId = null
+    // gEmptyCells = []
+
+    renderStopwatch()
+    renderLives()
+    disableRestartBtn()
+    buildBoard()
+    renderBoard()
 }
 
-function enableRestartButton() {
-    const elBtnContainer = document.querySelector('.btn-container')
+function enableRestartBtn() {
+    const elRestartBtnContainer = document.querySelector('.restart-btn-container')
     var btnStrHTML = `<button class="restart-btn" onclick="restartGame()">`
     if (gGame.isWin) {
         btnStrHTML += '😸'
@@ -122,7 +162,12 @@ function enableRestartButton() {
         btnStrHTML += '😿'
     }
     btnStrHTML += '</button>'
-    elBtnContainer.innerHTML = btnStrHTML
+    elRestartBtnContainer.innerHTML = btnStrHTML
+}
+
+function disableRestartBtn() {
+    const elBtnContainer = document.querySelector('.restart-btn-container')
+    elBtnContainer.innerHTML = `<button class="restart-btn"()">😺</button>`
 }
 
 function disableHover() {
@@ -131,5 +176,18 @@ function disableHover() {
         const clickableCell = clickableCells[i]
         clickableCell.classList.remove('clickable')
     }
+}
+
+function renderLives() {
+    var strHtmlLives = ''
+    if (gGame.livesCount === 0) {
+        strHtmlLives += '0'
+    } else {
+        for (var i = 0; i < gGame.livesCount; i++) {
+            strHtmlLives += '❤'
+        }
+    }
+    const elLives = document.querySelector('.lives')
+    elLives.innerText = strHtmlLives
 }
 

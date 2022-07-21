@@ -1,9 +1,13 @@
 'use strict'
 
 function cellClicked(elCell, i, j) {
+    // on first click
+    if (!gTimeIntervalId) {
+        startGame(i, j)
+    }
     if (!gGame.isOn) return
     const cell = gBoard[i][j]
-    if (cell.isShown) return
+    if (cell.isShown || cell.isMarked) return
     // MODEL
     cell.isShown = true
     elCell.classList.add('shown')
@@ -26,6 +30,8 @@ function cellClicked(elCell, i, j) {
 
 function cellMarked(ev, elCell, i, j) {
     ev.preventDefault()
+    if (!gTimeIntervalId) startGame(i, j)
+    if (!gGame.isOn) return
     const cell = gBoard[i][j]
     if (cell.isShown) return
     // MODEL

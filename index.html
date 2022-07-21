@@ -10,17 +10,27 @@
 </head>
 
 <body onload="initGame()">
-    <h1>Minesweeper</h1>
-    <div class="stopwatch-container">TIME:<span class="stopwatch">0</span></div>
-    <div class="btn-container">
-        <button class="restart-btn">😺</button>
+    <div class="game-container">
+        <h1>Minesweeper</h1>
+        <div class="stopwatch-container">TIME: <span class="stopwatch">00.00</span></div>
+        <div class="restart-btn-container">
+            <button class="restart-btn">😺</button>
+        </div>
+        <div class="level-btns-container">
+            <button class="level-btn" onclick="setEasyLevel()">EASY</button>
+            <button class="level-btn" onclick="setMediumLevel()">MEDIUM</button>
+            <button class="level-btn" onclick="setExpertLevel()">EXPERT</button>
+        </div>
+        <table>
+            <tbody></tbody>
+        </table>
+        <div class="lives-container">LIVES LEFT: <span class="lives">❤</span></div>
     </div>
-    <table border="1">
-        <tbody></tbody>
-    </table>
     <script src="js/util.js"></script>
+    <script src="js/level.js"></script>
     <script src="js/main.js"></script>
     <script src="js/user.js"></script>
+    <script src="js/time.js"></script>
 </body>
 
 </html>

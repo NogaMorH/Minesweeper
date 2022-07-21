@@ -97,7 +97,7 @@ function setMinesNegsCount(cellI, cellJ, mat) {
 function drawNum(nums) {
     var randIdx = getRandomInt(0, nums.length)
     var num = nums[randIdx]
-    gNums.splice(randIdx, 1)
+    nums.splice(randIdx, 1)
     return num
 }
 
@@ -118,14 +118,12 @@ function handleKey(event, i, j) {
     }
 }
 
-function getEmptyCells(board) {
+function getEmptyCells(board, cellI, cellJ) {
     var emptyCells = []
     for (var i = 0; i < board.length; i++) {
         for (var j = 0; j < board[0].length; j++) {
-            var cell = board[i][j]
-            if (cell === null) {
-                emptyCells.push({ i, j })
-            }
+            if (i === cellI && j === cellJ) continue
+            emptyCells.push({ i, j })
         }
     }
     return emptyCells
