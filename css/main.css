@@ -85,6 +85,10 @@ table {
     background: linear-gradient(rgb(126, 34, 34), rgb(177, 52, 52));
 }
 
+.exploded {
+    background: linear-gradient(rgb(202, 99, 99), rgb(239, 159, 159));
+}
+
 .lives-container {
     font-size: 20px;
     margin-top: 20px;

@@ -9,6 +9,7 @@ function nextClickHint(elBtn) {
 }
 
 function showHint(cellI, cellJ) {
+    gIsHint = false
     for (var i = cellI - 1; i <= cellI + 1; i++) {
         if (i < 0 || i >= gBoard.length) continue
         for (var j = cellJ - 1; j <= cellJ + 1; j++) {
@@ -44,7 +45,7 @@ function hideHint() {
             else elCell.innerText = cell.minesAroundCount
         } else elCell.innerText = ' '
     }
-    gIsHint = false
+    gHintCellLocations = []
 }
 
 function renderHintsCount() {

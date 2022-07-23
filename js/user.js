@@ -7,21 +7,19 @@ function cellClicked(elCell, i, j) {
     }
     if (!gGame.isOn) return
     const cell = gBoard[i][j]
-    if (cell.isShown || cell.isMarked) return
-    // MODEL
+    if (cell.isShown || cell.isMarked || cell.isExploded) return
     if (gIsHint) {
         showHint(i, j)
+        return
+    }
+    if (cell.isMine) {
+        gameOver(elCell, i, j)
         return
     }
     cell.isShown = true
     gGame.shownCount++
     elCell.classList.add('shown')
     elCell.classList.remove('clickable')
-    if (cell.isMine) {
-        // DOM
-        gameOver(elCell, i, j)
-        return
-    }
     if (cell.minesAroundCount !== 0) {
         // DOM
         elCell.innerText = cell.minesAroundCount

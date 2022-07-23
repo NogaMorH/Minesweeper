@@ -10,7 +10,8 @@ var gGame = {
     secsPassed: '0:0',
     minesLocations: [],
     isWin: false,
-    livesCount: 1
+    livesCount: 1,
+    minesExplodedCount: 0
 }
 
 const MINE = '💣'
@@ -75,28 +76,31 @@ function setMines(clickedCellI, clickedCellJ) {
 }
 
 function checkWin() {
+    const notMineCellsCount = gLevel.size * gLevel.size - gLevel.mines
+    if (gGame.shownCount !== notMineCellsCount) {
+        return
+    }
+
     for (var i = 0; i < gGame.minesLocations.length; i++) {
         const mineLocation = gGame.minesLocations[i]
         const mineCell = gBoard[mineLocation.i][mineLocation.j]
-        if (mineCell.isMarked || mineCell.isShown) {
-            const notMineCellsCount = gLevel.size * gLevel.size - gLevel.mines
-            const lifeDiff = gLevel.lives - gGame.livesCount
-            if (gGame.shownCount >= notMineCellsCount + lifeDiff) {
-                clearInterval(gTimeIntervalId)
-                gGame.isWin = true
-                gGame.isOn = false
-                enableRestartBtn()
-            }
-        }
+        if (!mineCell.isMarked && !mineCell.isExploded) return
     }
+    clearInterval(gTimeIntervalId)
+    gGame.isWin = true
+    gGame.isOn = false
+    enableRestartBtn()
 }
 
 function gameOver(elCell, i, j) {
     --gGame.livesCount
     renderLives()
+    gGame.minesExplodedCount++
     if (gGame.livesCount !== 0) {
         gBoard[i][j].isExploded = true
         elCell.innerText = '💣'
+        elCell.classList.add('exploded')
+        elCell.classList.remove('clickable')
         return
     }
     // MODEL
@@ -133,6 +137,7 @@ function restartGame() {
     gGame.minesLocations = []
     gGame.isWin = false
     gGame.livesCount = gLevel.lives
+    gGame.minesExplodedCount = 0
 
     gStartTime = null
     gTimeIntervalId = null
